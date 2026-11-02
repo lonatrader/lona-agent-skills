@@ -1,166 +1,107 @@
-# LONA Trading Assistant — Plugin
+# LONA Trading Assistant
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-2.1.0-green.svg)](CHANGELOG.md)
-[![MCP Registry](https://img.shields.io/badge/MCP-Registry-blue)](https://registry.modelcontextprotocol.io/)
-[![Claude Code](https://img.shields.io/badge/Claude-Code-blueviolet)](https://code.claude.com)
-[![Cursor](https://img.shields.io/badge/Cursor-Marketplace-orange)](https://cursor.com/marketplace)
+Create, backtest, optimize, and analyze Python Backtrader strategies from your assistant using your LONA account.
 
-AI-powered algorithmic trading strategy development plugin for [Claude Code](https://code.claude.com), [Claude Cowork](https://claude.com), and [Cursor](https://cursor.com). Create, backtest, and analyze trading strategies using the [Lona platform](https://www.lona.agency).
+This public repository contains plugin configuration, skills, commands, and an agent. It connects to LONA's hosted MCP at `https://mcp.lona.agency/mcp` through OAuth. The LONA application and server implementations are maintained separately; no local server, npm package, API key, or user ID is required.
 
-## Quick Start
+## Get started
 
-### Install in Cursor
+1. Create a LONA account at [app.lona.agency/chat](https://app.lona.agency/chat).
+2. Add the connection in your assistant using one of the options below.
+3. Complete the LONA browser sign-in and authorization when prompted.
+4. Try: **List my saved LONA strategies. Do not create or run anything.**
 
-```bash
-# From the Cursor Marketplace (when available)
-cursor://anysphere.cursor-deeplink/mcp/install?name=lona
-```
+Backtests and optimizations use your account's entitlements or credits. Walk-Forward Analysis requires Pro, Premium, or Quant. Account data and permissions are enforced by the remote service.
 
-Or add the MCP server manually in Cursor Settings → Features → MCP:
+## Cursor
+
+Until marketplace publication is confirmed, connect the MCP manually by merging this entry into `.cursor/mcp.json` in a project, or `~/.cursor/mcp.json` for your user:
 
 ```json
 {
   "mcpServers": {
     "lona": {
-      "command": "npx",
-      "args": ["@lona/mcp-server"],
-      "env": {
-        "LONA_GATEWAY_URL": "https://gateway.lona.agency",
-        "LONA_API_KEY": "your-api-key",
-        "LONA_USER_ID": "your-user-id"
-      }
+      "url": "https://mcp.lona.agency/mcp"
     }
   }
 }
 ```
 
-### Install in Claude Code
+Enable the server in Cursor and complete OAuth. This installs the connection only. To load the bundled skills, commands, agent, and rule during development, follow [Testing](#testing). The plugin manifest is `.cursor-plugin/plugin.json`, which loads `mcp.json`.
+
+## Claude Code
+
+To load this entire plugin from a checkout:
 
 ```bash
-# From the Plugin Directory (when available)
-claude plugin add lona
-
-# Or install directly from GitHub
-claude plugin add https://github.com/mindsightventures/lona-agent-skills
+claude --plugin-dir /absolute/path/to/lona-agent-skills
 ```
 
-### Try It
+Use `/mcp` to authenticate the LONA connection. Alternatively, install just the remote MCP connection:
 
-```
-/lona-backtest
-```
-
-This walks you through creating a strategy, downloading data, running a backtest, and analyzing results — all in one workflow.
-
-## What's Included
-
-### Skills
-
-Domain-specific knowledge loaded on-demand when relevant.
-
-| Skill | Description |
-|-------|-------------|
-| [trading-strategy](./skills/trading-strategy/SKILL.md) | Create and manage Backtrader strategies — from Python code or natural language descriptions |
-| [market-data](./skills/market-data/SKILL.md) | Browse pre-loaded datasets (equities, crypto, forex) and download from Binance |
-| [backtest-analysis](./skills/backtest-analysis/SKILL.md) | Run backtests and analyze performance — Sharpe ratio, drawdown, win rate, trade history |
-
-### Rules (Cursor)
-
-| Rule | Description |
-|------|-------------|
-| [lona-trading](./rules/lona-trading.mdc) | Guidelines for using Lona MCP tools to develop and backtest trading strategies |
-
-### Slash Commands
-
-Quick-access workflows invoked with `/lona:command-name`.
-
-| Command | Description |
-|---------|-------------|
-| [/lona-backtest](./commands/lona-backtest.md) | Full end-to-end: strategy + data + backtest + results |
-| [/lona-strategies](./commands/lona-strategies.md) | List, create, view, and update strategies |
-| [/lona-data](./commands/lona-data.md) | Browse symbols and download market data |
-
-### Agent
-
-| Agent | Description |
-|-------|-------------|
-| [trading-assistant](./agents/trading-assistant.md) | Specialized agent for trading strategy development and analysis |
-
-## MCP Tools (18 total)
-
-This plugin connects to the Lona MCP Server, which provides 18 tools:
-
-| Category | Tools |
-|----------|-------|
-| **Strategy Management** | `lona_list_strategies`, `lona_get_strategy`, `lona_get_strategy_code`, `lona_create_strategy`, `lona_update_strategy` |
-| **AI Generation** | `lona_create_strategy_from_description`, `lona_get_strategy_creation_status` |
-| **Market Data** | `lona_list_symbols`, `lona_get_symbol`, `lona_get_symbol_data`, `lona_download_market_data` |
-| **Backtesting** | `lona_run_backtest`, `lona_get_report_status` |
-| **Reports** | `lona_list_reports`, `lona_get_report`, `lona_get_full_report`, `lona_get_report_chart` |
-| **Auth** | `lona_register_agent` |
-
-## Configuration
-
-The plugin connects to Lona via MCP. The `.mcp.json` configuration:
-
-```json
-{
-  "mcpServers": {
-    "lona": {
-      "command": "npx",
-      "args": ["@lona/mcp-server"],
-      "env": {
-        "LONA_GATEWAY_URL": "https://gateway.lona.agency",
-        "LONA_API_KEY": "your-api-key",
-        "LONA_USER_ID": "your-user-id"
-      }
-    }
-  }
-}
+```bash
+claude mcp add --transport http lona https://mcp.lona.agency/mcp
 ```
 
-Get your API key and User ID from [lona.agency](https://www.lona.agency).
+Choose one connection method to avoid registering duplicate servers. This repository's Claude Code plugin is separate from the [LONA connector in Claude's directory](https://claude.ai/directory/lona-v2).
 
-For OAuth-based connections (Claude.ai Connectors), the MCP endpoint is:
-- **URL**: `https://mcp.lona.agency/mcp`
-- **Auth**: OAuth 2.1 with PKCE
+## Other MCP clients
 
-## Platform Compatibility
+Where the host supports remote HTTP MCP with OAuth, enter `https://mcp.lona.agency/mcp` as a custom connector. Tool availability and interactive views depend on the host. A custom connection does not mean LONA is listed in that host's public directory.
 
-| Platform | Status | Components |
-|----------|--------|------------|
-| **Cursor** | Marketplace (pending review) | Skills, Rules, Agents, Commands, MCP |
-| **Claude Code** | Plugin Directory | Skills, Agents, Commands, MCP |
-| **Claude.ai (Cowork)** | MCP Connectors | MCP Tools + Widgets |
-| **ChatGPT** | App Store (pending review) | MCP Tools + Widgets |
-| **MCP Registry** | Published (`agency.lona/trading`) | MCP Server |
+## Included workflows
 
-## Example Workflows
+| Component | Purpose |
+| --- | --- |
+| `skills/trading-strategy/` | Inspect, author, validate, and version Backtrader strategies |
+| `skills/market-data/` | Find symbols and inspect cached frequencies and date coverage |
+| `skills/backtest-analysis/` | Backtests, reports, optimization, and Walk-Forward Analysis |
+| `commands/lona-strategies.md` | List or manage saved strategies |
+| `commands/lona-data.md` | Find market data |
+| `commands/lona-backtest.md` | Prepare and run an authorized backtest |
+| `agents/trading-assistant.md` | Strategy development and analysis guidance |
+| `rules/lona-trading.mdc` | Cursor workflow guidance |
 
-### 1. Generate a strategy from a description
-> "Create a momentum strategy that buys when RSI crosses below 30 and sells above 70"
+The connected server advertises the current tools and schemas; follow those definitions instead of assuming a fixed tool count. Key tools include:
 
-The AI generates Backtrader Python code based on the description, polls until complete, and presents the source for review.
+- Strategies: `lona_list_strategies`, `lona_get_strategy`, `lona_get_strategy_documentation`, `lona_run_dry_run_backtest`, `lona_create_strategy`, `lona_update_strategy`.
+- Market data: `lona_search_symbols_by_name`, `lona_list_symbols`, `lona_get_symbol`, `lona_download_market_data`.
+- Backtests and reports: `lona_run_backtest`, `lona_wait_for_reports`, `lona_get_report`, `lona_list_report_trades`, `lona_show_report`.
+- Optimization: `lona_run_optimization`, `lona_run_time_window_optimization`, `lona_wait_for_optimization`, `lona_list_optimization_results`.
+- Walk-Forward Analysis: `lona_preview_walk_forward_analysis`, `lona_run_walk_forward_analysis`, `lona_wait_for_walk_forward_analysis`, `lona_get_walk_forward_analysis`.
+- Credits: `lona_get_credit_usage`.
 
-### 2. Download data and run a backtest
-> "/lona-backtest" → Select strategy → Download BTCUSDT daily data → Run with $100K → View results
+Only `lona_show_*` tools request interactive views. Text and structured results remain usable in hosts without widget support. The plugin provides historical strategy testing, not live brokerage execution.
 
-Full E2E workflow with Sharpe ratio, max drawdown, win rate, and trade-by-trade history.
+## Testing
 
-### 3. Compare strategy performance
-> "List my recent backtest reports and compare the top 3 by Sharpe ratio"
+Validate the Claude plugin manifest from the repository root:
 
-Fetches reports, extracts metrics, and provides side-by-side analysis.
+```bash
+claude plugin validate .
+```
 
-## Contributing
+For Cursor, copy the package into an unused folder at `~/.cursor/plugins/local/lona`, restart Cursor or run **Developer: Reload Window**, and check its components in **Customize**. Copy the hidden manifest directories as well. Local imports must be allowed; an installed marketplace plugin with the same name takes precedence. See [Cursor's local testing instructions](https://cursor.com/docs/plugins#test-plugins-locally).
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on reporting issues, submitting PRs, and adding skills.
+Check these scenarios in each target host:
 
-## About
+1. Authorize with a test account; confirm cancelling sign-in leaves the connection unauthenticated.
+2. List strategies, inspect one, search for an instrument, and read an existing report. An empty account should return an empty list, not invented examples.
+3. Ask to create a simple strategy. Confirm the assistant reads the documentation, validates complete code with a dry run, and saves the returned strategy ID.
+4. Explicitly approve a small backtest using available data. Confirm the returned report reaches a terminal state and actual metrics can be retrieved. Inspect any supported interactive view separately.
+5. Request a Walk-Forward Analysis **preview only** on a paid account. Confirm the schedule and estimate are returned without starting the analysis.
+6. Verify tool errors are explained and failed or timed-out executions are not resubmitted automatically.
 
-[Lona](https://www.lona.agency) is an AI-powered trading strategy development platform by [Mindsight Ventures](https://mindsightventures.ai).
+Use a separate test connection and test account when changing environments. The packaged URL points to production. Authenticated end-to-end testing in Cursor and Grok Bot remains required before publication.
+
+## Marketplace submission
+
+After testing and merging this update, submit this public repository at [Cursor's publication form](https://cursor.com/marketplace/publish). The package includes the manifest, MIT license, and a square logo with a background at `assets/lona-icon.svg`. Review and approval are still required; this repository alone does not establish a marketplace listing.
+
+Reference: [Cursor plugin specification](https://cursor.com/docs/reference/plugins), [Claude Code plugin reference](https://code.claude.com/docs/en/plugins-reference).
+
+Support: [feedback@lona.agency](mailto:feedback@lona.agency).
 
 ## License
 
-[MIT](LICENSE)
+MIT. See [LICENSE](LICENSE). The license applies to this package; remote LONA service access uses your LONA account and plan.

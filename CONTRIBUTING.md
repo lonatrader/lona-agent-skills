@@ -83,13 +83,13 @@ This plugin supports both Claude Code and Cursor:
 | Rules (`rules/`) | N/A | Via `plugin.json` path |
 | Commands (`commands/`) | Supported | Supported |
 | Agents (`agents/`) | Supported | Supported |
-| MCP (`.mcp.json`) | Supported | Supported |
+| MCP | `.mcp.json` (HTTP transport) | `mcp.json` via manifest |
 
-When adding new components, ensure they work on both platforms by following the directory conventions above.
+Keep the MCP server name and URL synchronized between `.mcp.json` and `mcp.json`. Claude Code declares `type: "http"`; Cursor infers the transport from `url`. Never commit credentials or OAuth tokens. Validate with `claude plugin validate .`, check manifest paths, and follow the README testing checklist in each target host before publication.
 
 ## Code of Conduct
 
-This project follows the [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you agree to uphold this code.
+Keep discussions respectful, constructive, and focused on the work.
 
 ## Questions?
 

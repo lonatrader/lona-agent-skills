@@ -1,106 +1,32 @@
 ---
 name: lona-backtest-analysis
-description: Run backtests and analyze trading strategy performance on the Lona platform. Use when the user wants to test a strategy against historical data, check backtest results, view performance metrics like Sharpe ratio and drawdown, see trade history, or visualize trades on a chart.
+description: Use when the user wants to run or analyze LONA backtests, parameter optimizations, or Walk-Forward Analysis.
 ---
 
-# Backtest Execution & Analysis
+# Backtests and analysis
 
-You have access to Lona's backtesting tools for testing trading strategies against historical market data and analyzing the results.
+Follow the connected server's current schemas and account limits. Resolve real strategy and symbol IDs before execution. A request for a preview or explanation must not start a run. Use `lona_get_credit_usage` when the user needs their balance; do not invent job costs. Execute only the requested work and avoid automatically resubmitting jobs after a timeout or error.
 
-## Available Tools
+## Backtests
 
-### Running Backtests
-- **lona_run_backtest**: Execute a strategy against historical data (async — returns report_id immediately)
-- **lona_get_report_status**: Poll the backtest execution status
+1. Retrieve the strategy and verify the selected data's cached frequency and coverage.
+2. Establish dates, frequency, initial cash, commission, leverage, and any numeric or boolean parameter overrides. Use the advertised fields, including `initial_cash` and an array of `{name, value}` overrides. Apply documented defaults when appropriate; ask if a material choice is missing.
+3. If execution is authorized, call `lona_run_backtest`. Keep the returned report ID and wait with `lona_wait_for_reports`.
+4. Check each terminal status. Read completed metrics with `lona_get_report`; use `lona_list_report_trades` for paginated trade history. Surface failures instead of inventing results.
+5. Include the tested period, assumptions, trade count, return, drawdown, and available risk metrics. Stored report statistics take precedence over trade recounts; timeline-derived trade P&L excludes fees and commissions.
 
-### Viewing Results
-- **lona_list_reports**: List all backtest reports with status and key metrics. Filter by `strategy_id` or `status`
-- **lona_get_report**: Get summary metrics (total return, Sharpe ratio, max drawdown, win rate, trade count)
-- **lona_get_full_report**: Comprehensive results with trade history, detailed metrics, and per-symbol breakdown
-- **lona_get_report_chart**: Visualize trades on an interactive candlestick chart with buy/sell markers
+Use `lona_list_reports` to find saved results without rerunning a backtest. Request an interactive view with `lona_show_report` when wanted. Only show tools request UI, and the host may not support it; missing chart objects in a tool response are not a reason to retry or start another execution.
 
-## Workflows
+## Optimization
 
-### Run a backtest
+Use `lona_run_optimization` for an authorized parameter grid sweep. Use `lona_run_time_window_optimization` to evaluate excluded weekdays or UTC entry times with fixed strategy parameters; it requires intraday data. Follow their schemas and entitlement/credit requirements.
 
-Prerequisites: You need a `strategy_id` (from `lona_list_strategies` or `lona_create_strategy`) and one or more `data_ids` (from `lona_list_symbols` or `lona_download_market_data`).
+Wait with `lona_wait_for_optimization`, inspect `lona_get_optimization`, and page through `lona_list_optimization_results`. Present the target metric, direction, grid or excluded periods, tested dates, and actual results. Compare matching assumptions and distinguish optimized in-sample performance from unseen-data validation.
 
-1. Call `lona_run_backtest` with:
-   - `strategy_id` (required)
-   - `data_ids` array (required) — one or more symbol IDs
-   - `start_date` and `end_date` in ISO format (required)
-   - Optional: `initial_cash` (default: 100000), `commission` (default: 0.001), `leverage` (default: 1)
-   - Optional: `parameters` object to override strategy params (e.g., `{"fast_period": 5, "slow_period": 20}`)
-2. Receive `report_id` immediately
-3. Poll `lona_get_report_status` every 5-10 seconds
-4. Status pipeline: PENDING -> EXECUTING -> PROCESSING -> COMPLETED/FAILED
-5. When COMPLETED, view results
+## Walk-Forward Analysis
 
-### Analyze results
+Walk-Forward Analysis requires Pro, Premium, or Quant. Use `lona_preview_walk_forward_analysis` to inspect the schedule, backtest count, and estimated credits before launching. If the user requested only a preview, stop there. Launch an authorized analysis with `lona_run_walk_forward_analysis`, wait with `lona_wait_for_walk_forward_analysis`, and inspect `lona_get_walk_forward_analysis`.
 
-1. Call `lona_get_report` for a quick summary with key metrics
-2. Call `lona_get_full_report` for the complete picture including trade-by-trade history
-3. Call `lona_get_report_chart` to visualize entries and exits on a price chart
+Explain rolling versus anchored windows and distinguish in-sample optimization from out-of-sample results. Follow the returned date semantics: configuration end dates are inclusive calendar dates, while window boundaries use inclusive starts and exclusive ends. Adjacent IS and OOS windows can share a boundary without overlapping. Do not alter returned dates to conceal a boundary.
 
-### Compare strategies
-
-1. Call `lona_list_reports` to see all completed backtests
-2. Get summary metrics for multiple reports with `lona_get_report`
-3. Compare Sharpe ratios, drawdowns, and returns side by side
-
-## Key Performance Metrics
-
-| Metric | What It Measures | Good | Excellent |
-|--------|------------------|------|-----------|
-| **Total Return (%)** | Overall strategy profit/loss | > 0% | > 20% annually |
-| **Sharpe Ratio** | Risk-adjusted return | > 1.0 | > 2.0 |
-| **Max Drawdown (%)** | Largest peak-to-trough decline | < 20% | < 10% |
-| **Win Rate (%)** | Percentage of profitable trades | > 50% | > 60% |
-| **Number of Trades** | Statistical significance | > 30 | > 100 |
-| **Net P&L ($)** | Absolute profit/loss | Positive | Consistent growth |
-| **Profit Factor** | Gross profit / gross loss | > 1.5 | > 2.0 |
-
-## Analysis Guidelines
-
-### Red Flags
-- Max drawdown > 30% — excessive risk, consider adding stop losses
-- Win rate > 90% — likely overfitting or tiny take-profits with large stop losses
-- Trade count < 10 — not statistically significant, test on longer periods
-- Sharpe ratio < 0.5 — poor risk-adjusted returns, rethink the strategy logic
-
-### Improvement Suggestions
-- **Low Sharpe**: Add trend filters, tighten entry rules, or add position sizing
-- **High drawdown**: Add stop losses, reduce position sizes, or add exit rules
-- **Low win rate but profitable**: Normal for trend-following — ensure risk/reward ratio is favorable
-- **High win rate but unprofitable**: Cut losses faster, the few losing trades are too large
-
-### Multi-Instrument Analysis
-When backtesting with multiple symbols:
-- Use `lona_get_full_report` for per-symbol breakdown
-- Check if performance is driven by one symbol or balanced across all
-- Compare correlation between symbol returns
-- Evaluate if diversification improved risk-adjusted metrics
-
-## Examples
-
-### Run a basic backtest
-```
-strategy_id: "abc123"
-data_ids: ["def456"]
-start_date: "2024-01-01"
-end_date: "2024-12-31"
-initial_cash: 100000
-commission: 0.001
-```
-
-### Run with custom parameters
-```
-strategy_id: "abc123"
-data_ids: ["def456", "ghi789"]
-start_date: "2024-01-01"
-end_date: "2024-12-31"
-initial_cash: 50000
-commission: 0.002
-leverage: 2
-parameters: {"fast_period": 5, "slow_period": 20, "stop_loss": 0.02}
-```
+Report historical findings and their limitations without universal performance thresholds or promises of future returns.

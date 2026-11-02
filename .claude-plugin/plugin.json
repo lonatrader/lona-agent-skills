@@ -1,8 +1,12 @@
 {
   "name": "lona",
-  "version": "2.1.0",
-  "description": "Trading strategy development tools: create, backtest, and analyze algorithmic strategies with AI",
-  "author": "Mindsight Ventures",
+  "version": "2.2.0",
+  "description": "Create, backtest, optimize, and analyze Python Backtrader trading strategies with LONA. Connect your LONA account through OAuth.",
+  "author": {
+    "name": "Mindsight Ventures",
+    "email": "feedback@lona.agency"
+  },
   "homepage": "https://lona.agency",
-  "repository": "https://github.com/mindsightventures/lona-agent-skills"
+  "repository": "https://github.com/mindsightventures/lona-agent-skills",
+  "license": "MIT"
 }

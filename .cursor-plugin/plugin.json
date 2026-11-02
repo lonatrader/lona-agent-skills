@@ -1,8 +1,8 @@
 {
   "name": "lona",
   "displayName": "LONA Trading Assistant",
-  "version": "2.1.0",
-  "description": "AI-powered trading strategy development: create, backtest, and analyze algorithmic strategies with Backtrader via 18 MCP tools.",
+  "version": "2.2.0",
+  "description": "Create, backtest, optimize, and analyze Python Backtrader trading strategies with LONA. Connect your LONA account through OAuth.",
   "author": {
     "name": "Mindsight Ventures",
     "email": "feedback@lona.agency"
@@ -33,5 +33,6 @@
   "skills": "./skills/",
   "rules": "./rules/",
   "agents": "./agents/",
-  "commands": "./commands/"
+  "commands": "./commands/",
+  "mcpServers": "./mcp.json"
 }

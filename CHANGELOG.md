@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.0] - 2026-11-02
+
+### Changed
+
+- Replace the local npm/API-key connection with the hosted remote MCP and OAuth sign-in.
+- Add Cursor's `mcp.json`, retain Claude Code's `.mcp.json`, and update both manifests.
+- Refresh skills, commands, and agent guidance for current tools, strategy validation, immutable versions, data availability, optimization, and Walk-Forward Analysis.
+- Replace retired tool examples and fixed tool counts with current schema guidance.
+- Add setup, reviewer testing, and marketplace submission instructions, with a square logo on a background.
+
 ## [2.1.0] - 2026-03-12
 
 ### Added

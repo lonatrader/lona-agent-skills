@@ -1,13 +1,8 @@
 {
   "mcpServers": {
     "lona": {
-      "command": "npx",
-      "args": ["@lona/mcp-server"],
-      "env": {
-        "LONA_GATEWAY_URL": "https://gateway.lona.agency",
-        "LONA_API_KEY": "",
-        "LONA_USER_ID": ""
-      }
+      "type": "http",
+      "url": "https://mcp.lona.agency/mcp"
     }
   }
 }

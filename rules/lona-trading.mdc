@@ -1,64 +1,16 @@
 ---
 name: lona-trading
-description: Guidelines for using Lona MCP tools to develop and backtest trading strategies
+description: Use LONA's connected MCP tools for strategies, market data, backtests, optimization, and Walk-Forward Analysis.
 globs: "**"
 alwaysApply: false
 ---
 
-# Lona Trading Strategy Development
+# LONA workflows
 
-When working with trading strategy development, backtesting, or market data analysis, use the Lona MCP tools.
-
-## MCP Server
-
-This plugin connects to the Lona MCP server (`lona`) which provides 18 tools for algorithmic trading strategy development.
-
-## Tool Categories
-
-### Strategy Management
-- `lona_list_strategies` — List all saved strategies
-- `lona_get_strategy` — Get strategy metadata
-- `lona_get_strategy_code` — View Python source code
-- `lona_create_strategy` — Create from Backtrader code
-- `lona_update_strategy` — Modify an existing strategy (creates new version)
-
-### AI Strategy Generation
-- `lona_create_strategy_from_description` — Generate from natural language (async, returns jobId)
-- `lona_get_strategy_creation_status` — Poll creation progress (PENDING → GENERATING → SAVING → COMPLETED)
-
-### Market Data
-- `lona_list_symbols` — Browse available datasets (set `is_global: true` for pre-loaded data)
-- `lona_get_symbol` — Get symbol details
-- `lona_get_symbol_data` — Preview OHLCV data
-- `lona_download_market_data` — Download cryptocurrency data from Binance
-
-### Backtesting
-- `lona_run_backtest` — Execute strategy against historical data (async, returns report_id)
-- `lona_get_report_status` — Poll execution status (PENDING → EXECUTING → PROCESSING → COMPLETED)
-
-### Results & Analysis
-- `lona_list_reports` — List backtest reports
-- `lona_get_report` — Summary metrics (return, Sharpe, drawdown, win rate)
-- `lona_get_full_report` — Detailed results with trade history
-- `lona_get_report_chart` — Interactive chart with trade markers
-
-## Strategy Code Standards
-
-All strategies use Python Backtrader:
-- Import: `import backtrader as bt`
-- Inherit from `bt.Strategy`
-- Parameters as tuples: `params = (('name', default_value),)`
-- `__init__` for indicators, `next` for trading logic
-- Orders: `self.buy()`, `self.sell()`, `self.close()`
-
-## Async Operations
-
-Two operations are async and require polling:
-- **Strategy creation**: Poll `lona_get_strategy_creation_status` every 10-15 seconds (3-5 min typical)
-- **Backtest execution**: Poll `lona_get_report_status` every 5-10 seconds (30s-5 min typical)
-
-## Limitations
-
-- Lona is for backtesting only, not live trading
-- No delete operations available via MCP
-- Cryptocurrency data downloads are from Binance spot pairs only
+- Connect to `https://mcp.lona.agency/mcp` with OAuth and follow its current instructions and schemas.
+- Read `lona_get_strategy_documentation` before authoring. Validate complete source with `lona_run_dry_run_backtest` before saving it. Use returned IDs after creates and immutable updates.
+- Resolve the symbol, date coverage, and cached frequency before execution. Follow account plan limits.
+- Run only requested work; a preview must not execute an analysis. Backtests and optimizations may consume entitlements or credits.
+- Retain job IDs, use the advertised wait tools, and inspect terminal status and actual results. Do not automatically resubmit executions after errors or timeouts.
+- Only `lona_show_*` tools request interactive views; absence of chart objects in returned data does not imply a missing view.
+- Keep in-sample optimization separate from out-of-sample validation and explain the actual date boundaries in Walk-Forward Analysis.
