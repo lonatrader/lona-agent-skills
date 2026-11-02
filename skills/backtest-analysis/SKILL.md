@@ -19,14 +19,14 @@ Use `lona_list_reports` to find saved results without rerunning a backtest. Requ
 
 ## Optimization
 
-Use `lona_run_optimization` for an authorized parameter grid sweep. Use `lona_run_time_window_optimization` to evaluate excluded weekdays or UTC entry times with fixed strategy parameters; it requires intraday data. Follow their schemas and entitlement/credit requirements.
+Use `lona_run_optimization` for an authorized parameter grid sweep. Follow its current schema and entitlement/credit requirements. Do not assume tools from another deployment are available; use only those advertised by the connected server.
 
-Wait with `lona_wait_for_optimization`, inspect `lona_get_optimization`, and page through `lona_list_optimization_results`. Present the target metric, direction, grid or excluded periods, tested dates, and actual results. Compare matching assumptions and distinguish optimized in-sample performance from unseen-data validation.
+Wait with `lona_wait_for_optimization`, inspect `lona_get_optimization`, and page through `lona_list_optimization_results`. Present the target metric, direction, parameter grid, tested dates, and actual results. Treat grid results as neutral historical comparisons, not a recommended parameter set. Compare matching assumptions and distinguish optimized in-sample performance from unseen-data validation.
 
 ## Walk-Forward Analysis
 
-Walk-Forward Analysis requires Pro, Premium, or Quant. Use `lona_preview_walk_forward_analysis` to inspect the schedule, backtest count, and estimated credits before launching. If the user requested only a preview, stop there. Launch an authorized analysis with `lona_run_walk_forward_analysis`, wait with `lona_wait_for_walk_forward_analysis`, and inspect `lona_get_walk_forward_analysis`.
+Walk-Forward Analysis requires Pro, Premium, or Quant. Use `lona_preview_walk_forward_analysis` to inspect the schedule, backtest count, out-of-sample share, and estimated credits before launching. Always present the returned out-of-sample share. If the user requested only a preview, stop there. Launch an authorized analysis with `lona_run_walk_forward_analysis`, wait with `lona_wait_for_walk_forward_analysis`, and inspect `lona_get_walk_forward_analysis`.
 
-Explain rolling versus anchored windows and distinguish in-sample optimization from out-of-sample results. Follow the returned date semantics: configuration end dates are inclusive calendar dates, while window boundaries use inclusive starts and exclusive ends. Adjacent IS and OOS windows can share a boundary without overlapping. Do not alter returned dates to conceal a boundary.
+Explain rolling versus anchored windows and distinguish in-sample optimization from out-of-sample results. Follow the returned date semantics: configuration dates and displayed window periods include both their first and last value (UTC days, or UTC minutes for hourly steps). Each out-of-sample period starts immediately after its in-sample period ends. Present the returned dates unchanged; do not convert them to exclusive boundaries.
 
 Report historical findings and their limitations without universal performance thresholds or promises of future returns.

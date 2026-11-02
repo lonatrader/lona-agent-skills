@@ -6,7 +6,7 @@ Thank you for your interest in contributing to Lona Agent Skills! This guide wil
 
 ### Reporting Issues
 
-- Use [GitHub Issues](https://github.com/mindsightventures/lona-agent-skills/issues) to report bugs or suggest improvements.
+- Use [GitHub Issues](https://github.com/lonatrader/lona-agent-skills/issues) to report bugs or suggest improvements.
 - Include a clear description of the problem or suggestion.
 - For skill-related issues, mention which skill is affected (trading-strategy, market-data, or backtest-analysis).
 
@@ -93,4 +93,4 @@ Keep discussions respectful, constructive, and focused on the work.
 
 ## Questions?
 
-If you have questions about contributing, open a [Discussion](https://github.com/mindsightventures/lona-agent-skills/discussions) or reach out at [lona.agency](https://www.lona.agency).
+If you have questions about contributing, open a [Discussion](https://github.com/lonatrader/lona-agent-skills/discussions) or reach out at [lona.agency](https://www.lona.agency).

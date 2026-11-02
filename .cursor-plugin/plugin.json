@@ -1,14 +1,14 @@
 {
   "name": "lona",
   "displayName": "LONA Trading Assistant",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Create, backtest, optimize, and analyze Python Backtrader trading strategies with LONA. Connect your LONA account through OAuth.",
   "author": {
     "name": "Mindsight Ventures",
     "email": "feedback@lona.agency"
   },
   "homepage": "https://lona.agency",
-  "repository": "https://github.com/mindsightventures/lona-agent-skills",
+  "repository": "https://github.com/lonatrader/lona-agent-skills",
   "license": "MIT",
   "logo": "assets/lona-icon.svg",
   "keywords": [

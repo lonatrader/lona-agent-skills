@@ -67,7 +67,7 @@ The connected server advertises the current tools and schemas; follow those defi
 - Strategies: `lona_list_strategies`, `lona_get_strategy`, `lona_get_strategy_documentation`, `lona_run_dry_run_backtest`, `lona_create_strategy`, `lona_update_strategy`.
 - Market data: `lona_search_symbols_by_name`, `lona_list_symbols`, `lona_get_symbol`, `lona_download_market_data`.
 - Backtests and reports: `lona_run_backtest`, `lona_wait_for_reports`, `lona_get_report`, `lona_list_report_trades`, `lona_show_report`.
-- Optimization: `lona_run_optimization`, `lona_run_time_window_optimization`, `lona_wait_for_optimization`, `lona_list_optimization_results`.
+- Optimization: `lona_run_optimization`, `lona_wait_for_optimization`, `lona_list_optimization_results`.
 - Walk-Forward Analysis: `lona_preview_walk_forward_analysis`, `lona_run_walk_forward_analysis`, `lona_wait_for_walk_forward_analysis`, `lona_get_walk_forward_analysis`.
 - Credits: `lona_get_credit_usage`.
 
@@ -89,14 +89,14 @@ Check these scenarios in each target host:
 2. List strategies, inspect one, search for an instrument, and read an existing report. An empty account should return an empty list, not invented examples.
 3. Ask to create a simple strategy. Confirm the assistant reads the documentation, validates complete code with a dry run, and saves the returned strategy ID.
 4. Explicitly approve a small backtest using available data. Confirm the returned report reaches a terminal state and actual metrics can be retrieved. Inspect any supported interactive view separately.
-5. Request a Walk-Forward Analysis **preview only** on a paid account. Confirm the schedule and estimate are returned without starting the analysis.
+5. Request a Walk-Forward Analysis **preview only** on a paid account. Confirm the schedule, out-of-sample share, and estimate are returned without starting the analysis.
 6. Verify tool errors are explained and failed or timed-out executions are not resubmitted automatically.
 
 Use a separate test connection and test account when changing environments. The packaged URL points to production. Authenticated end-to-end testing in Cursor and Grok Bot remains required before publication.
 
 ## Marketplace submission
 
-After testing and merging this update, submit this public repository at [Cursor's publication form](https://cursor.com/marketplace/publish). The package includes the manifest, MIT license, and a square logo with a background at `assets/lona-icon.svg`. Review and approval are still required; this repository alone does not establish a marketplace listing.
+After testing and merging this update, submit [lonatrader/lona-agent-skills](https://github.com/lonatrader/lona-agent-skills) at [Cursor's publication form](https://cursor.com/marketplace/publish). The package includes the manifest, MIT license, and a square logo with a background at `assets/lona-icon.svg`. Review and approval are still required; this repository alone does not establish a marketplace listing.
 
 Reference: [Cursor plugin specification](https://cursor.com/docs/reference/plugins), [Claude Code plugin reference](https://code.claude.com/docs/en/plugins-reference).
 

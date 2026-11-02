@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.1] - 2026-11-02
+
+### Fixed
+
+- Update repository and contribution links after transfer to `lonatrader`.
+- Align guidance with the current production MCP: inclusive Walk-Forward window dates, out-of-sample share, neutral grid results, and IDs kept out of responses unless requested.
+- Remove references to time-window optimization tools that are not available in production.
+
 ## [2.2.0] - 2026-11-02
 
 ### Changed
