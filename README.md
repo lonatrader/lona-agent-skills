@@ -1,6 +1,6 @@
 # LONA Trading Assistant
 
-Create, backtest, optimize, and analyze Python Backtrader strategies from your assistant using your LONA account.
+Create, backtest, optimize, and analyze Python Backtrader strategies in **Cursor**, **Claude Code**, and other compatible MCP clients using your LONA account.
 
 This public repository contains plugin configuration, skills, commands, and an agent. It connects to LONA's hosted MCP at `https://mcp.lona.agency/mcp` through OAuth. The LONA application and server implementations are maintained separately; no local server, npm package, API key, or user ID is required.
 
@@ -14,6 +14,24 @@ This public repository contains plugin configuration, skills, commands, and an a
 Backtests and optimizations use your account's entitlements or credits. Walk-Forward Analysis requires Pro, Premium, or Quant. Account data and permissions are enforced by the remote service.
 
 ## Cursor
+
+### Install the full plugin
+
+While marketplace review is pending, install a local copy of this public package:
+
+```bash
+mkdir -p ~/.cursor/plugins/local
+git clone https://github.com/lonatrader/lona-agent-skills.git ~/.cursor/plugins/local/lona
+```
+
+1. Restart Cursor or run **Developer: Reload Window**.
+2. Open **Customize** and confirm the LONA plugin and MCP server are available. Local plugin imports must be allowed by your organization.
+3. Enable LONA and complete the browser OAuth sign-in with your LONA account.
+4. Ask Cursor: **List my saved LONA strategies. Do not create or run anything.**
+
+This loads the bundled skills, commands, agent, rule, and remote MCP connection. If the folder already exists, update that checkout instead of cloning again. The commands install the repository's default branch; PR changes become available there after merging. For details, see [Cursor's plugin instructions](https://cursor.com/docs/plugins#test-plugins-locally).
+
+### Connect only the MCP
 
 Until marketplace publication is confirmed, connect the MCP manually by merging this entry into `.cursor/mcp.json` in a project, or `~/.cursor/mcp.json` for your user:
 
